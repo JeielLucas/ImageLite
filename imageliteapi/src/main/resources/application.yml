@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/imagelite
+    username: postgres
+    password: postgres
+  jpa:
+    database: POSTGRESQL
+    hibernate:
+      ddl-auto: update #Criação e alteração de tabelas de acordo com o mapeamento JPA
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
