@@ -1,12 +1,14 @@
 package com.jeiellucas.imageliteapi.application.images;
 
 import com.jeiellucas.imageliteapi.domain.entity.Image;
+import com.jeiellucas.imageliteapi.domain.enums.ImageExtension;
 import com.jeiellucas.imageliteapi.domain.service.ImageService;
 import com.jeiellucas.imageliteapi.infra.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,5 +26,10 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Optional<Image> getById(String id){
         return imageRepository.findById(id);
+    }
+
+    @Override
+    public List<Image> search(ImageExtension extension, String query) {
+        return imageRepository.findByExtensionAndNameOrTagsLike(extension, query);
     }
 }

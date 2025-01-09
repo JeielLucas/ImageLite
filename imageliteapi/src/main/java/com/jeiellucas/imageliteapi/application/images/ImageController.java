@@ -5,7 +5,10 @@ import com.jeiellucas.imageliteapi.domain.enums.ImageExtension;
 import com.jeiellucas.imageliteapi.domain.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -13,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -40,13 +44,6 @@ public class ImageController {
         return ResponseEntity.created(imageUri).build();
     }
 
-    private URI buildImageURL(Image image){
-        String imagePath = "/" + image.getId();
-        //                      http://localhost:8080/v1/images/id_image
-        return ServletUriComponentsBuilder.fromCurrentRequest().path(imagePath).build().toUri();
-        //                      http://localhost:8080/v1/images + /id_image
-    }
-
     @GetMapping("{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable("id") String id){
         var possibleImage = imageService.getById(id);
@@ -59,7 +56,7 @@ public class ImageController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(image.getExtension().getMediaType());
         headers.setContentLength(image.getSize());
-        
+
         ContentDisposition contentDisposition = ContentDisposition
                 .inline()
                 .filename(image.getFileName())
@@ -68,5 +65,31 @@ public class ImageController {
         headers.setContentDisposition(contentDisposition);
 
         return new ResponseEntity<>(image.getFile(), headers, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ImageDTO>> search(@RequestParam(value = "extension", required = false, defaultValue = "") String extension,
+                                                 @RequestParam(value = "query", required = false) String query){
+
+        var result = imageService.search(ImageExtension.ofName(extension), query);
+
+        var images = result.stream().map(image -> {
+            var url = buildImageURL(image);
+            return imageMapper.imageToDTO(image, url.toString()); // Especificação de retorno para lambda de multiplas linhas, mostra o que deve ser coletado
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(images);
+    }
+
+    private URI buildImageURL(Image image){
+        String imagePath = "/" + image.getId();
+
+        //Caminho total = http://localhost:8080/v1/images/id_image
+        return ServletUriComponentsBuilder
+                //CurrentRequestUri = http://localhost:8080/v1/images
+                .fromCurrentRequestUri()
+                //Path = /id_image
+                .path(imagePath)
+                .build().toUri();
     }
 }
