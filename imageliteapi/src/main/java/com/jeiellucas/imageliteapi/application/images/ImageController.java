@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/v1/images")
 @Slf4j
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class ImageController {
 
     private final ImageService imageService;
@@ -57,12 +58,8 @@ public class ImageController {
         headers.setContentType(image.getExtension().getMediaType());
         headers.setContentLength(image.getSize());
 
-        ContentDisposition contentDisposition = ContentDisposition
-                .inline()
-                .filename(image.getFileName())
-                .build();
+        headers.setContentDispositionFormData("inline;filename=\"" + image.getFileName() + "\"", image.getFileName());
 
-        headers.setContentDisposition(contentDisposition);
 
         return new ResponseEntity<>(image.getFile(), headers, HttpStatus.OK);
     }
