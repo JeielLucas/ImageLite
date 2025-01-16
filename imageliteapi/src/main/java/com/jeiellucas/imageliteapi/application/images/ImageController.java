@@ -34,7 +34,7 @@ public class ImageController {
             @RequestParam("file") MultipartFile file, //Recebendo o arquivo
             @RequestParam(value = "name", required = true) String name, // Como fazer o parametro ser opcional ou não
             @RequestParam("tags")List<String> tags
-            ) throws IOException {
+    ) throws IOException {
 
         log.info("Imagem Recebida: name: {}, size: {}", file.getOriginalFilename(), file.getSize());
 

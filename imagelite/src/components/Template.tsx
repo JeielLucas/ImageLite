@@ -1,10 +1,12 @@
+import { ToastContainer } from 'react-toastify'
+
 interface TemplateProps{
     children: React.ReactNode;
     loading?: boolean;
 }
 
                         //Funcional component do tipo TemplateProps
-export const Template: React.FC<TemplateProps> = ({children, loading}) =>{
+export const Template: React.FC<TemplateProps> = ({children, loading = false} : TemplateProps) =>{
     return(
         <>
             <Header />
@@ -21,6 +23,15 @@ export const Template: React.FC<TemplateProps> = ({children, loading}) =>{
             </div>
             
             <Footer />
+
+            <ToastContainer position='top-right'
+                            autoClose={8000}
+                            hideProgressBar={false}
+                            draggable={false}
+                            closeOnClick={true}
+                            pauseOnHover={true}
+                            
+            />
         </>
     )
 };
@@ -53,7 +64,7 @@ const Header: React.FC = () =>{
     return(
         <header className="bg-indigo-950 text-white py-3">
             <div className="container mx-auto flex justify-between items-center px-4">
-                <h1 className="text-3x1 font-bold">Image Lite</h1>
+                <h1 className="text-3xl font-bold">Image Lite</h1>
             </div>
         </header>
     )
