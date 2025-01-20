@@ -5,7 +5,6 @@ import com.jeiellucas.imageliteapi.domain.enums.ImageExtension;
 import com.jeiellucas.imageliteapi.domain.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/v1/images")
 @Slf4j
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class ImageController {
 
     private final ImageService imageService;

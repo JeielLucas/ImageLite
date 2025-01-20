@@ -4,13 +4,14 @@ interface InputProps{
     placeholder? : string;
     id?: string;
     value?: string;
+    type?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
-    style, ...rest
+    style, type = "text", ...rest
 } : InputProps) => {
     return(
-        <input type="text"
+        <input type={type}
                 /*
                 SPREAD OPERATOR
                 Todas as propriedades do props são atribuidas a propriedades de nome
