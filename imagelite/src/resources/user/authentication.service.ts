@@ -2,7 +2,7 @@ import { User, Credentials, AccessToken, UserSessionToken} from './users.resourc
 import jwt from 'jwt-decode';
 
 class AuthService {
-    baseURL: string = 'http://localhost:8080/v1/users';
+    baseURL: string = process.env.NEXT_PUBLIC_API_URL + '/v1/users';
     static AUTH_PARAM: string = "_ auth";
 
     async authenticate(credentials: Credentials) : Promise<AccessToken> {
@@ -52,19 +52,26 @@ class AuthService {
     }
 
     setUserSession(userSessionToken: UserSessionToken){
-        localStorage.setItem(AuthService.AUTH_PARAM, JSON.stringify(userSessionToken));
+        try{
+            localStorage.setItem(AuthService.AUTH_PARAM, JSON.stringify(userSessionToken));
+        }catch(error){}
+  
     }
 
     getUserSession() : UserSessionToken | null {
-        const authString = localStorage.getItem(AuthService.AUTH_PARAM);
+        try{
+            const authString = localStorage.getItem(AuthService.AUTH_PARAM);
+        
+            if(!authString){
+                return null;
+            }
 
-        if(!authString){
+            const token: UserSessionToken = JSON.parse(authString);
+
+            return token;
+        }catch(error){
             return null;
         }
-
-        const token: UserSessionToken = JSON.parse(authString);
-
-        return token;
     }
 
     isSessionValid() : boolean{
@@ -82,6 +89,12 @@ class AuthService {
         }
 
         return false;
+    }
+
+    invalidateSession(): void{
+        try{
+            localStorage.removeItem(AuthService.AUTH_PARAM);
+        }catch(error){}
     }
 
 }

@@ -1,4 +1,9 @@
+'use client'
+
 import { ToastContainer } from 'react-toastify'
+import Link from 'next/link'
+import { useAuth } from '@/resources';
+import { useRouter } from 'next/navigation';
 
 interface TemplateProps{
     children: React.ReactNode;
@@ -61,10 +66,36 @@ const Loading: React.FC = () =>{
 };
 
 const Header: React.FC = () =>{
+
+    const auth = useAuth();
+    const router = useRouter();
+
+    function logout(){
+        auth.invalidateSession();
+        router.push("/login");
+    }
+
     return(
         <header className="bg-indigo-950 text-white py-3">
             <div className="container mx-auto flex justify-between items-center px-4">
+            <Link href="/galeria">
                 <h1 className="text-3xl font-bold">Image Lite</h1>
+            </Link>
+            <RenderIf condition={!!auth.getUserSession()}>
+                <div className="flex items-center">
+                    <div className="relative">
+                        <span className="w-64 py-3 px-6 text-md">
+                            Olá, {auth.getUserSession()?.name}
+                        </span>
+                        <span className="w-64 py-3 px-6 text-sm">
+                            <a href="#" onClick={logout}>
+                                Sair
+                            </a>
+                        </span>
+                    </div>
+                </div>
+            </RenderIf>
+            
             </div>
         </header>
     )
