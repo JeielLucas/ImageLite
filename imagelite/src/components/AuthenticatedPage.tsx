@@ -1,4 +1,4 @@
-import Login from "@/app/login/page";
+import LoginPage from "@/app/login/page";
 import { useAuth } from "@/resources";
 
 interface AuthenticatedPageProps {
@@ -12,7 +12,7 @@ export const AuthenticatedPage: React.FC<AuthenticatedPageProps> = ({
     const auth = useAuth();
 
     if(!auth.isSessionValid()){
-        return <Login />
+        return <LoginPage />
     }
 
     return(
