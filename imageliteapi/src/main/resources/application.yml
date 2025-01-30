@@ -1,3 +1,4 @@
+# Configuracao default
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/imagelite
@@ -6,9 +7,19 @@ spring:
   jpa:
     database: POSTGRESQL
     hibernate:
-      ddl-auto: update #Criação e alteração de tabelas de acordo com o mapeamento JPA
+      ddl-auto: update #Criacao e alteracao de tabelas de acordo com o mapeamento JPA
     show-sql: true
   servlet:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
+
+# Configurando para ambiente de producao
+# --- Serve para identificar uma sobrescrita da config
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:5432/imagelite
