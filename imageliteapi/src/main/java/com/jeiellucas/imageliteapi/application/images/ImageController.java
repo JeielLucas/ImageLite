@@ -15,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -31,9 +32,8 @@ public class ImageController {
     public ResponseEntity save(
             @RequestParam("file") MultipartFile file, //Recebendo o arquivo
             @RequestParam(value = "name", required = true) String name, // Como fazer o parametro ser opcional ou não
-            @RequestParam("tags")List<String> tags
+            @RequestParam(value = "tags")List<String> tags
     ) throws IOException {
-
         log.info("Imagem Recebida: name: {}, size: {}", file.getOriginalFilename(), file.getSize());
 
         Image image = imageMapper.mapToImage(file, name, tags);
@@ -44,10 +44,11 @@ public class ImageController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<byte[]> getImage(@PathVariable("id") String id){
+    public ResponseEntity getImage(@PathVariable("id") String id){
         var possibleImage = imageService.getById(id);
+
         if(possibleImage.isEmpty()){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Image not found"));
         }
 
         var image = possibleImage.get();

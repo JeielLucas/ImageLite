@@ -40,7 +40,7 @@ public class UserController {
         var token = userService.authenticate(dto.getEmail(), dto.getPassword());
 
         if(token == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "User not authorized"));
         }
 
         return ResponseEntity.ok(token);
